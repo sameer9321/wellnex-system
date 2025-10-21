@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion,useAnimation,useMotionValue,useTransform, } from "framer-motion";
 import "./style.css";
 
 export default function App() {
+  // 3D Hover motion values for About Section
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [15, -15]);
+  const rotateY = useTransform(x, [-100, 100], [-15, 15]);
+
+  const handleMouseMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const posX = event.clientX - rect.left - rect.width / 2;
+    const posY = event.clientY - rect.top - rect.height / 2;
+    x.set(posX);
+    y.set(posY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
   const controls = useAnimation();
   const images = [
     "../hero.jpg",
@@ -37,54 +55,55 @@ export default function App() {
     };
     loopSlider();
   }, [controls, images.length]);
+
   const [category, setCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
   const products = [
-  {
-    name: "Protein Powder",
-    img: "../product.jpg",
-    category: "protein",
-    desc: "High-quality protein powder to support muscle recovery.",
-  },
-  {
-    name: "Creatine Monohydrate",
-    img: "../product2.webp",
-    category: "creatine",
-    desc: "Boost your performance and strength with pure creatine.",
-  },
-  {
-    name: "Vitamin Supplements",
-    img: "../product3.jpg",
-    category: "protein",
-    desc: "Essential vitamins to boost your daily wellness.",
-  },
-  {
-    name: "Energy Drinks",
-    img: "../product4.jpg",
-    category: "protein",
-    desc: "Instant energy boost for intense workouts.",
-  },
-  {
-    name: "Pre-Workout Boost",
-    img: "../product5.jpg",
-    category: "creatine",
-    desc: "Maximize performance and focus before workouts.",
-  },
-  {
-    name: "Protein Box",
-    img: "../product6.jpg",
-    category: "protein",
-    desc: "All-in-one protein meal box for busy days.",
-  },
-];
+    {
+      name: "Protein Powder",
+      img: "../product.jpg",
+      category: "protein",
+      desc: "High-quality protein powder to support muscle recovery.",
+    },
+    {
+      name: "Creatine Monohydrate",
+      img: "../product2.webp",
+      category: "creatine",
+      desc: "Boost your performance and strength with pure creatine.",
+    },
+    {
+      name: "Vitamin Supplements",
+      img: "../product3.jpg",
+      category: "protein",
+      desc: "Essential vitamins to boost your daily wellness.",
+    },
+    {
+      name: "Energy Drinks",
+      img: "../product4.jpg",
+      category: "protein",
+      desc: "Instant energy boost for intense workouts.",
+    },
+    {
+      name: "Pre-Workout Boost",
+      img: "../product5.jpg",
+      category: "creatine",
+      desc: "Maximize performance and focus before workouts.",
+    },
+    {
+      name: "Protein Box",
+      img: "../product6.jpg",
+      category: "protein",
+      desc: "All-in-one protein meal box for busy days.",
+    },
+  ];
 
-// === FILTERED PRODUCTS LOGIC ===
-const filteredProducts = products.filter((p) => {
-  const matchesCategory = category === "all" || p.category === category;
-  const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
-  return matchesCategory && matchesSearch;
-});
+  // === FILTERED PRODUCTS LOGIC ===
+  const filteredProducts = products.filter((p) => {
+    const matchesCategory = category === "all" || p.category === category;
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const [showScroll, setShowScroll] = useState(false);
   useEffect(() => {
@@ -243,9 +262,11 @@ const filteredProducts = products.filter((p) => {
       </section>
 
       {/* ===== ABOUT ===== */}
+     <div className="bg-black text-white">
+      {/* === ABOUT SECTION WITH 3D HOVER IMAGE === */}
       <section id="about" className="max-w-6xl mx-auto px-6 py-20">
-        <div style={{ textAlign: "center" }}>
-          <h1 style={{ fontWeight: "bold", fontSize: "3rem", }}>
+        <div style={{ textAlign: "center", paddingBottom: "40px" }}>
+          <h1 style={{ fontWeight: "bold", fontSize: "3rem" }}>
             <span style={{ color: "orange" }}>About</span>{" "}
             <span style={{ color: "white" }}>Wellnex</span>
           </h1>
@@ -253,18 +274,27 @@ const filteredProducts = products.filter((p) => {
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.img
-            src="../about.jpeg"
+            src="/about.jpeg" // image must be in /public folder
             alt="Wellness Lifestyle"
-            className="rounded-2xl shadow-lg"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="rounded-2xl shadow-lg w-full"
+            style={{
+              rotateX,
+              rotateY,
+              transformPerspective: 1000,
+              cursor: "pointer",
+            }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           />
+
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <h2 className="text-3xl font-semibold mb-4 text-white">
               Where Wellness Meets What’s Next
@@ -281,6 +311,9 @@ const filteredProducts = products.filter((p) => {
           </motion.div>
         </div>
       </section>
+
+      {/* You can continue with your slider, product grid, etc. below... */}
+    </div>
 
       {/* ===== APPS ===== */}
       <section id="apps" className="bg-black py-20 border-t border-gray-800">
