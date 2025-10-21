@@ -697,7 +697,7 @@ export default function App() {
             <a href="#" className="hover:text-orange-500 transition">🌐 www.wellnexsystems.com</a>
           </p>
           <p>© {new Date().getFullYear()} Wellnex Systems — All Rights Reserved.</p>
-          <p className="mt-2">Made with ❤️ for a healthier tomorrow.</p>
+          <p className="mt-2">Developed by Sameer and Shayan Mentor Sir Umair Warsi from Aptech SFC ❤️.</p>
         </div>
       </footer>
 
