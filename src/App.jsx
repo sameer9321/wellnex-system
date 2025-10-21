@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion,useAnimation,useMotionValue,useTransform, } from "framer-motion";
 import "./style.css";
+import "./appSection.css"
 
 export default function App() {
 
@@ -109,14 +110,26 @@ export default function App() {
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
+  
+  const [flippedCard, setFlippedCard] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => setShowScroll(window.scrollY > 300);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  const scrollToTop = () =>
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
   const apps = [
     {
@@ -343,80 +356,88 @@ export default function App() {
     </div>
 
       {/* ===== APPS ===== */}
-      <section id="apps" className="bg-black py-20 border-t border-gray-800">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-semibold text-center mb-12 text-white">
-            Our Flagship Apps
-          </h2>
+       <section id="apps" className="bg-black py-20 border-t border-gray-800">
+      <div className="max-w-6xl mx-auto px-6">
+        <h2 className="text-3xl font-semibold text-center mb-12 text-white">
+          Our Flagship Apps
+        </h2>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {apps.map((a, i) => (
-              <motion.div
-                key={a.id}
-                className="relative w-full h-[420px] perspective"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
+        <div className="grid md:grid-cols-2 gap-8">
+          {apps.map((app, i) => (
+            <motion.div
+              key={app.id}
+              className="relative w-full perspective"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              onClick={() => setFlippedCard(flippedCard === app.id ? null : app.id)}
+            >
+              <div
+                className={`relative min-h-[440px] rounded-2xl border border-gray-700 shadow-md transform-style preserve-3d transition-transform duration-700 cursor-pointer ${
+                  flippedCard === app.id ? "rotate-y-180" : ""
+                }`}
               >
-                <motion.div
-                  className="relative w-full h-full rounded-2xl border border-gray-700 shadow-md transform-style-preserve-3d cursor-pointer"
-                  whileHover={{ rotateY: 180 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {/* Front Side */}
-                  <div className="absolute inset-0 bg-gray-900 p-6 rounded-2xl backface-hidden">
+                {/* Front */}
+                <div className="absolute inset-0 bg-gray-900 p-6 rounded-2xl backface-hidden flex flex-col justify-between">
+                  <div>
                     <img
-                      src={a.image}
-                      alt={a.title}
+                      src={app.image}
+                      alt={app.title}
                       className="w-full h-48 object-cover rounded-lg mb-5"
                     />
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <div className="text-sm text-gray-500">{a.tag}</div>
+                        <div className="text-sm text-gray-500">{app.tag}</div>
                         <div className="text-xl font-semibold mt-1 text-white">
-                          {a.title}
+                          {app.title}
                         </div>
                       </div>
                       <div className="w-14 h-14 rounded-lg bg-orange-500 text-black flex items-center justify-center font-bold text-lg">
-                        {a.title[0]}
+                        {app.title[0]}
                       </div>
                     </div>
-
-                    {/* Description Paragraph */}
-                    <p className="mt-4 text-gray-400 text-sm leading-relaxed">
-                      {a.features.join(" ")}
+                    <p className="mt-4 text-gray-400 text-sm leading-relaxed line-clamp-4">
+                      {app.features.join(" ")}
                     </p>
                   </div>
+                </div>
 
-                  {/* Back Side */}
-                  <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotateY-180 backface-hidden flex flex-col justify-center items-center">
-                    <h3 className="text-2xl font-bold mb-4">{a.title}</h3>
-
-                    {/* Key Features List */}
-                    {a.keyfeatures && (
-                      <ul className="list-disc list-inside text-sm text-black/80 mb-6 text-left max-w-xs">
-                        {a.keyfeatures.map((k) => (
-                          <li key={k}>{k}</li>
-                        ))}
-                      </ul>
-                    )}
-
-                    <div className="flex gap-3">
-                      <a className="px-4 py-2 rounded-md bg-black text-white text-sm hover:bg-gray-800 transition">
-                        Download
-                      </a>
-                      <a className="px-4 py-2 rounded-md border border-black text-black text-sm hover:bg-black hover:text-white transition">
-                        Learn more
-                      </a>
-                    </div>
+                {/* Back */}
+                <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 text-center">{app.title}</h3>
+                    <ul className="list-disc list-inside text-sm text-black/80 mb-6 max-h-40 overflow-y-auto pr-2">
+                      {app.keyfeatures.map((k) => (
+                        <li key={k}>{k}</li>
+                      ))}
+                    </ul>
                   </div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
+                  <div className="flex gap-3 justify-center">
+                    <a className="px-4 py-2 rounded-md bg-black text-white text-sm hover:bg-gray-800 transition">
+                      Download
+                    </a>
+                    <a className="px-4 py-2 rounded-md border border-black text-black text-sm hover:bg-black hover:text-white transition">
+                      Learn more
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </section>
+
+        {/* Scroll To Top Button */}
+        {showScroll && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 px-4 py-2 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 transition z-50"
+          >
+            ↑ Top
+          </button>
+        )}
+      </div>
+    </section>
 
       {/* ===== PRODUCTS ===== */}
       {/* ===== PRODUCTS SECTION ===== */}
