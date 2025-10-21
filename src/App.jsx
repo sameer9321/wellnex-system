@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion,useAnimation,useMotionValue,useTransform, } from "framer-motion";
+import { motion, useAnimation, useMotionValue, useTransform, } from "framer-motion";
 import "./style.css";
 import "./appSection.css"
 
@@ -110,7 +110,7 @@ export default function App() {
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-  
+
   const [flippedCard, setFlippedCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
@@ -169,7 +169,7 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans text-white bg-black scroll-smooth">
       {/* ===== NAVBAR ===== */}
-     <header className="fixed w-full z-40 backdrop-blur-md bg-black/60 py-4 border-b border-gray-800">
+      <header className="fixed w-full z-40 backdrop-blur-md bg-black/60 py-4 border-b border-gray-800">
         <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-md bg-orange-500 flex items-center justify-center text-white font-bold transition-transform group-hover:scale-110">
@@ -221,7 +221,7 @@ export default function App() {
           ))}
         </div>
       )}
-  );
+      );
 
 
       {/* ===== HERO SECTION ===== */}
@@ -302,142 +302,141 @@ export default function App() {
       </section>
 
       {/* ===== ABOUT ===== */}
-     <div className="bg-black text-white">
-      {/* === ABOUT SECTION WITH 3D HOVER IMAGE === */}
-      <section id="about" className="max-w-6xl mx-auto px-6 py-20">
-        <div style={{ textAlign: "center", paddingBottom: "40px" }}>
-          <h1 style={{ fontWeight: "bold", fontSize: "3rem" }}>
-            <span style={{ color: "orange" }}>About</span>{" "}
-            <span style={{ color: "white" }}>Wellnex</span>
-          </h1>
-        </div>
+      <div className="bg-black text-white">
+        {/* === ABOUT SECTION WITH 3D HOVER IMAGE === */}
+        <section id="about" className="max-w-6xl mx-auto px-6 py-20">
+          <div style={{ textAlign: "center", paddingBottom: "40px" }}>
+            <h1 style={{ fontWeight: "bold", fontSize: "3rem" }}>
+              <span style={{ color: "orange" }}>About</span>{" "}
+              <span style={{ color: "white" }}>Wellnex</span>
+            </h1>
+          </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <motion.img
-            src="/about.jpeg" // image must be in /public folder
-            alt="Wellness Lifestyle"
-            className="rounded-2xl shadow-lg w-full"
-            style={{
-              rotateX,
-              rotateY,
-              transformPerspective: 1000,
-              cursor: "pointer",
-            }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          />
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.img
+              src="/about.jpeg" // image must be in /public folder
+              alt="Wellness Lifestyle"
+              className="rounded-2xl shadow-lg w-full"
+              style={{
+                rotateX,
+                rotateY,
+                transformPerspective: 1000,
+                cursor: "pointer",
+              }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            />
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <h2 className="text-3xl font-semibold mb-4 text-white">
-              Where Wellness Meets What’s Next
-            </h2>
-            <p className="text-gray-400 leading-relaxed mb-4">
-              We combine human insight with technology to help people stay
-              physically active, mentally balanced, and emotionally resilient.
-            </p>
-            <p className="text-gray-400 font-medium">
-              From gyms to meditation, Wellnex bridges the gap between
-              well-being and innovation — creating a future where wellness is
-              connected, effortless, and intelligent.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="text-3xl font-semibold mb-4 text-white">
+                Where Wellness Meets What’s Next
+              </h2>
+              <p className="text-gray-400 leading-relaxed mb-4">
+                We combine human insight with technology to help people stay
+                physically active, mentally balanced, and emotionally resilient.
+              </p>
+              <p className="text-gray-400 font-medium">
+                From gyms to meditation, Wellnex bridges the gap between
+                well-being and innovation — creating a future where wellness is
+                connected, effortless, and intelligent.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
-      {/* You can continue with your slider, product grid, etc. below... */}
-    </div>
+        {/* You can continue with your slider, product grid, etc. below... */}
+      </div>
 
       {/* ===== APPS ===== */}
-       <section id="apps" className="bg-black py-20 border-t border-gray-800">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl font-semibold text-center mb-12 text-white">
-          Our Flagship Apps
-        </h2>
+      <section id="apps" className="bg-black py-20 border-t border-gray-800">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-semibold text-center mb-12 text-white">
+            Our Flagship Apps
+          </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {apps.map((app, i) => (
-            <motion.div
-              key={app.id}
-              className="relative w-full perspective"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              onClick={() => setFlippedCard(flippedCard === app.id ? null : app.id)}
-            >
-              <div
-                className={`relative min-h-[440px] rounded-2xl border border-gray-700 shadow-md transform-style preserve-3d transition-transform duration-700 cursor-pointer ${
-                  flippedCard === app.id ? "rotate-y-180" : ""
-                }`}
+          <div className="grid md:grid-cols-2 gap-8">
+            {apps.map((app, i) => (
+              <motion.div
+                key={app.id}
+                className="relative w-full perspective"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                onClick={() => setFlippedCard(flippedCard === app.id ? null : app.id)}
               >
-                {/* Front */}
-                <div className="absolute inset-0 bg-gray-900 p-6 rounded-2xl backface-hidden flex flex-col justify-between">
-                  <div>
-                    <img
-                      src={app.image}
-                      alt={app.title}
-                      className="w-full h-48 object-cover rounded-lg mb-5"
-                    />
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <div className="text-sm text-gray-500">{app.tag}</div>
-                        <div className="text-xl font-semibold mt-1 text-white">
-                          {app.title}
+                <div
+                  className={`relative min-h-[440px] rounded-2xl border border-gray-700 shadow-md transform-style preserve-3d transition-transform duration-700 cursor-pointer ${flippedCard === app.id ? "rotate-y-180" : ""
+                    }`}
+                >
+                  {/* Front */}
+                  <div className="absolute inset-0 bg-gray-900 p-6 rounded-2xl backface-hidden flex flex-col justify-between">
+                    <div>
+                      <img
+                        src={app.image}
+                        alt={app.title}
+                        className="w-full h-48 object-cover rounded-lg mb-5"
+                      />
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <div className="text-sm text-gray-500">{app.tag}</div>
+                          <div className="text-xl font-semibold mt-1 text-white">
+                            {app.title}
+                          </div>
+                        </div>
+                        <div className="w-14 h-14 rounded-lg bg-orange-500 text-black flex items-center justify-center font-bold text-lg">
+                          {app.title[0]}
                         </div>
                       </div>
-                      <div className="w-14 h-14 rounded-lg bg-orange-500 text-black flex items-center justify-center font-bold text-lg">
-                        {app.title[0]}
-                      </div>
+                      <p className="mt-4 text-gray-400 text-sm leading-relaxed line-clamp-4">
+                        {app.features.join(" ")}
+                      </p>
                     </div>
-                    <p className="mt-4 text-gray-400 text-sm leading-relaxed line-clamp-4">
-                      {app.features.join(" ")}
-                    </p>
                   </div>
-                </div>
 
-                {/* Back */}
-                <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-2xl font-bold mb-4 text-center">{app.title}</h3>
-                    <ul className="list-disc list-inside text-sm text-black/80 mb-6 max-h-40 overflow-y-auto pr-2">
-                      {app.keyfeatures.map((k) => (
-                        <li key={k}>{k}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="flex gap-3 justify-center">
-                    <a className="px-4 py-2 rounded-md bg-black text-white text-sm hover:bg-gray-800 transition">
-                      Download
-                    </a>
-                    <a className="px-4 py-2 rounded-md border border-black text-black text-sm hover:bg-black hover:text-white transition">
-                      Learn more
-                    </a>
+                  {/* Back */}
+                  <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-4 text-center">{app.title}</h3>
+                      <ul className="list-disc list-inside text-sm text-black/80 mb-6 max-h-40 overflow-y-auto pr-2">
+                        {app.keyfeatures.map((k) => (
+                          <li key={k}>{k}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="flex gap-3 justify-center">
+                      <a className="px-4 py-2 rounded-md bg-black text-white text-sm hover:bg-gray-800 transition">
+                        Download
+                      </a>
+                      <a className="px-4 py-2 rounded-md border border-black text-black text-sm hover:bg-black hover:text-white transition">
+                        Learn more
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Scroll To Top Button */}
+          {showScroll && (
+            <button
+              onClick={scrollToTop}
+              className="fixed bottom-6 right-6 px-4 py-2 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 transition z-50"
+            >
+              ↑ Top
+            </button>
+          )}
         </div>
-
-        {/* Scroll To Top Button */}
-        {showScroll && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-6 right-6 px-4 py-2 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 transition z-50"
-          >
-            ↑ Top
-          </button>
-        )}
-      </div>
-    </section>
+      </section>
 
       {/* ===== PRODUCTS ===== */}
       {/* ===== PRODUCTS SECTION ===== */}
