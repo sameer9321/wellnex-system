@@ -161,7 +161,6 @@ export default function App() {
         "Seamless checkin at partner gyms",
         "Workout tracking and performance analytics",
         "Membership management for gym owners",
-        "Realtime class schedules and bookings",
       ],
     },
   ];
@@ -410,12 +409,15 @@ export default function App() {
                   </div>
 
                   {/* Back */}
-                  <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col justify-between">
+                  <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col items-center justify-center text-center">
                     <div>
-                      <h3 className="text-2xl font-bold mb-4 text-center">{app.title}</h3>
-                      <ul className="list-disc list-inside text-sm text-black/80 mb-6 max-h-40 overflow-y-auto pr-2">
+                      <h3 className="text-2xl font-bold mb-4">{app.title}</h3>
+                      <ul className="list-none text-sm text-black/80 mb-6 max-h-40 overflow-y-auto pr-2 flex flex-col items-center">
                         {app.keyfeatures.map((k) => (
-                          <li key={k}>{k}</li>
+                          <li key={k} className="relative pl-5 mb-1 w-[220px] text-left">
+                            <span className="absolute left-0 top-0">•</span>
+                            {k}
+                          </li>
                         ))}
                       </ul>
                     </div>
@@ -428,6 +430,7 @@ export default function App() {
                       </a>
                     </div>
                   </div>
+
                 </div>
               </motion.div>
             ))}
