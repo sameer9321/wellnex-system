@@ -3,6 +3,11 @@ import { motion,useAnimation,useMotionValue,useTransform, } from "framer-motion"
 import "./style.css";
 
 export default function App() {
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navLinks = ["Home", "About", "Apps", "Platform", "Products", "Contact"];
+
   // 3D Hover motion values for About Section
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -151,7 +156,7 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans text-white bg-black scroll-smooth">
       {/* ===== NAVBAR ===== */}
-      <header className="fixed w-full z-40 backdrop-blur-md bg-black/60 py-4 border-b border-gray-800">
+     <header className="fixed w-full z-40 backdrop-blur-md bg-black/60 py-4 border-b border-gray-800">
         <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-md bg-orange-500 flex items-center justify-center text-white font-bold transition-transform group-hover:scale-110">
@@ -161,8 +166,10 @@ export default function App() {
               Wellnex
             </span>
           </a>
+
+          {/* Desktop Nav */}
           <ul className="hidden md:flex gap-6 items-center text-sm">
-            {["Home", "About", "Apps", "Platform", "Products", "Contact"].map((link) => (
+            {navLinks.map((link) => (
               <li key={link}>
                 <a
                   href={`#${link.toLowerCase()}`}
@@ -173,16 +180,36 @@ export default function App() {
               </li>
             ))}
           </ul>
+
+          {/* Mobile Button */}
           <div className="md:hidden">
-            <a
-              href="#menu"
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-sm px-3 py-2 rounded bg-orange-500 text-white"
             >
-              Menu
-            </a>
+              {isMenuOpen ? "Close" : "Menu"}
+            </button>
           </div>
         </nav>
       </header>
+
+      {/* Mobile Dropdown Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden fixed top-16 left-0 w-full bg-black/90 text-white z-30 px-6 py-4 space-y-4">
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href={`#${link.toLowerCase()}`}
+              className="block text-lg hover:text-orange-400 transition"
+              onClick={() => setIsMenuOpen(false)} // close menu on link click
+            >
+              {link}
+            </a>
+          ))}
+        </div>
+      )}
+  );
+
 
       {/* ===== HERO SECTION ===== */}
       <section
