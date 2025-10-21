@@ -232,17 +232,24 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col-reverse lg:flex-row items-center gap-12">
           {/* Left Side */}
           <div className="w-full lg:w-1/2">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-extrabold leading-tight"
-            >
-              Wellnex Systems
-              <span className="block text-orange-500 mt-2">
-                Wellness, Reimagined for the Next Generation
-              </span>
-            </motion.h1>
+            <div className="overflow-hidden">
+              <motion.h1
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  duration: 2,
+                  ease: "easeInOut", // smooth in and out
+                }}
+                className="text-4xl md:text-5xl font-extrabold leading-tight"
+              >
+                Wellnex Systems
+                <span className="block text-orange-500 mt-2">
+                  Wellness, Reimagined for the Next Generation
+                </span>
+              </motion.h1>
+
+
+            </div>
 
             <motion.p
               initial={{ opacity: 0 }}
