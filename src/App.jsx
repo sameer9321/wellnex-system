@@ -310,19 +310,20 @@ export default function App() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="md:hidden fixed top-16 left-0 w-full bg-gradient-to-br from-orange-500/90 to-purple-600/90 text-white z-30 px-6 py-4 space-y-4 border-b border-gray-900 backdrop-blur-md"
+          className="md:hidden fixed top-16 left-0 w-full bg-gradient-to-br from-orange-500/90 to-purple-600/90 text-black font-semibold z-30 px-6 py-6 border-b border-gray-900 backdrop-blur-md flex flex-col items-center space-y-4 text-center"
         >
           {navLinks.map((link) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
-              className="block text-lg hover:text-orange-400 transition"
-              onClick={() => setIsMenuOpen(false)} // close menu on link click
+              className="block w-full text-lg py-2 border border-white/30 rounded-lg hover:border-white hover:text-white transition text-center"
+              onClick={() => setIsMenuOpen(false)}
             >
               {link}
             </a>
           ))}
         </motion.div>
+
       )}
 
       {/* ===== HERO SECTION ===== */}
