@@ -310,7 +310,7 @@ export default function App() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="md:hidden fixed top-16 left-0 w-full bg-black/92 text-white z-30 px-6 py-4 space-y-4 border-b border-gray-900"
+          className="md:hidden fixed top-16 left-0 w-full bg-gradient-to-br from-orange-500/90 to-purple-600/90 text-white z-30 px-6 py-4 space-y-4 border-b border-gray-900 backdrop-blur-md"
         >
           {navLinks.map((link) => (
             <a
@@ -344,9 +344,10 @@ export default function App() {
             className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
           >
             Wellnex Systems
-            <span className="block text-orange-500 mt-2">
-              Wellness, Reimagined for the Next Generation
-            </span>
+           <span className="block mt-2 bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent">
+  Wellness, Reimagined for the Next Generation
+</span>
+
           </motion.h1>
 
           <motion.p
