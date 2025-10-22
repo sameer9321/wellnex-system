@@ -525,7 +525,7 @@ export default function App() {
                   </div>
 
                   {/* Back */}
-                  <div className="absolute inset-0 bg-orange-500 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col items-center justify-center text-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-purple-600 text-black rounded-2xl p-6 rotate-y-180 backface-hidden flex flex-col items-center justify-center text-center">
                     <div>
                       <h3 className="text-2xl font-bold mb-4">{app.title}</h3>
                       <ul className="list-none text-sm text-black/80 mb-6 max-h-40 overflow-y-auto pr-2 flex flex-col items-center">
