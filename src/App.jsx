@@ -33,7 +33,7 @@ export default function App() {
   };
 
   // Slider controls (kept your logic but tuned easing & delays)
-   const controls = useAnimation();
+  const controls = useAnimation();
   const images = [
     "../hero.jpg",
     "../hero2.jpg",
@@ -327,99 +327,99 @@ export default function App() {
 
       {/* ===== HERO SECTION ===== */}
       <section
-      id="home"
-      className="relative overflow-hidden bg-gradient-to-b from-black to-gray-900 pt-28 pb-20 hero-anim"
-    >
-      <div className="max-w-6xl mx-auto px-6 flex flex-col-reverse lg:flex-row items-center gap-12">
-        {/* Left Side */}
-        <div className="w-full lg:w-1/2">
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-            transition={{
-              duration: 1.4,
-              ease: [0.16, 1, 0.3, 1],
-              delay: 0.08,
-            }}
-            className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
-          >
-            Wellnex Systems
-           <span className="block mt-2 bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent">
-  Wellness, Reimagined for the Next Generation
-</span>
-
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{
-              duration: 1.1,
-              delay: 0.35,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="mt-6 text-gray-400 text-lg"
-          >
-            A digital wellness ecosystem designed to help you live better —
-            combining mindfulness, fitness, and health insights powered by AI
-            and innovation.
-          </motion.p>
-
-          <motion.div
-            className="mt-8 flex flex-wrap gap-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{
-              duration: 1.1,
-              delay: 0.6,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <a
-              href="#platform"
-              className="inline-block px-6 py-3 rounded-lg bg-gradient-to-br from-orange-500 to-purple-600 text-white font-medium transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"
+        id="home"
+        className="relative overflow-hidden bg-gradient-to-b from-black to-gray-900 pt-28 pb-20 hero-anim"
+      >
+        <div className="max-w-6xl mx-auto px-6 flex flex-col-reverse lg:flex-row items-center gap-12">
+          {/* Left Side */}
+          <div className="w-full lg:w-1/2">
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{
+                duration: 1.4,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.08,
+              }}
+              className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
             >
-              Join the Movement
-            </a>
-            <a
-              href="#apps"
-              className="inline-block px-6 py-3 rounded-lg border border-gray-600 text-gray-300 font-medium transition-all duration-300 ease-in-out hover:bg-gray-800 hover:border-gray-500 hover:scale-105"
+              Wellnex Systems
+              <span className="block mt-2 bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent">
+                Wellness, Reimagined for the Next Generation
+              </span>
+
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{
+                duration: 1.1,
+                delay: 0.35,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="mt-6 text-gray-400 text-lg"
             >
-              Explore Our Apps
-            </a>
-          </motion.div>
-        </div>
+              A digital wellness ecosystem designed to help you live better —
+              combining mindfulness, fitness, and health insights powered by AI
+              and innovation.
+            </motion.p>
 
-        {/* Right Side - Smooth Infinite Slider */}
-        <div className="w-full lg:w-1/2 flex justify-center relative overflow-hidden rounded-2xl border border-gray-700 shadow-2xl h-[400px] hero-anim">
-          {/* glowing animated background blob */}
-          <div className="absolute -inset-10 bg-gradient-to-br from-orange-500/12 via-purple-600/6 rounded-full blur-3xl animate-blob" />
-
-          <motion.div
-            animate={controls}
-            className="flex relative z-10 hero-anim"
-            style={{
-              width: `${(images.length + 1) * 100}%`,
-              display: "flex",
-            }}
-          >
-            {[...images, images[0]].map((src, i) => (
-              <div
-                key={i}
-                className="w-full flex-shrink-0 h-[400px] hero-anim"
+            <motion.div
+              className="mt-8 flex flex-wrap gap-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{
+                duration: 1.1,
+                delay: 0.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <a
+                href="#platform"
+                className="inline-block px-6 py-3 rounded-lg bg-gradient-to-br from-orange-500 to-purple-600 text-white font-medium transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"
               >
-                <img
-                  src={src}
-                  alt={`Slide ${i + 1}`}
-                  className="w-full h-[400px] object-cover rounded-2xl shadow-inner hero-anim"
-                  draggable={false}
-                />
-              </div>
-            ))}
-          </motion.div>
+                Join the Movement
+              </a>
+              <a
+                href="#apps"
+                className="inline-block px-6 py-3 rounded-lg border border-gray-600 text-gray-300 font-medium transition-all duration-300 ease-in-out hover:bg-gray-800 hover:border-gray-500 hover:scale-105"
+              >
+                Explore Our Apps
+              </a>
+            </motion.div>
+          </div>
+
+          {/* Right Side - Smooth Infinite Slider */}
+          <div className="w-full lg:w-1/2 flex justify-center relative overflow-hidden rounded-2xl border border-gray-700 shadow-2xl h-[400px] hero-anim">
+            {/* glowing animated background blob */}
+            <div className="absolute -inset-10 bg-gradient-to-br from-orange-500/12 via-purple-600/6 rounded-full blur-3xl animate-blob" />
+
+            <motion.div
+              animate={controls}
+              className="flex relative z-10 hero-anim"
+              style={{
+                width: `${(images.length + 1) * 100}%`,
+                display: "flex",
+              }}
+            >
+              {[...images, images[0]].map((src, i) => (
+                <div
+                  key={i}
+                  className="w-full flex-shrink-0 h-[400px] hero-anim"
+                >
+                  <img
+                    src={src}
+                    alt={`Slide ${i + 1}`}
+                    className="w-full h-[400px] object-cover rounded-2xl shadow-inner hero-anim"
+                    draggable={false}
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
 
       {/* ===== ABOUT ===== */}
@@ -427,14 +427,17 @@ export default function App() {
         <section id="about" className="max-w-6xl mx-auto px-6 py-20">
           <div style={{ textAlign: "center", paddingBottom: "40px" }}>
             <h1 style={{ fontWeight: "bold", fontSize: "3rem" }}>
-              <span style={{ color: "orange" }}>About</span>{" "}
+              <span className="bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent  mr-4">
+                About
+              </span>
               <span style={{ color: "white" }}>Wellnex</span>
+
             </h1>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.img
-              src="/about.jpeg" // image must be in /public folder
+              src="/about2.png" // image must be in /public folder
               alt="Wellness Lifestyle"
               className="rounded-2xl shadow-lg w-full transform-style preserve-3d"
               style={{
@@ -568,7 +571,7 @@ export default function App() {
         className="bg-gradient-to-b from-black to-gray-900 py-20 border-t border-gray-800"
       >
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-semibold mb-6 text-orange-500">
+          <h2 className=" bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent text-3xl font-semibold mb-6">
             Our Premium Products
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-12">
@@ -636,7 +639,7 @@ export default function App() {
         className="bg-gradient-to-b from-gray-900 to-black py-20 border-t border-gray-800"
       >
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-semibold mb-6 text-orange-500">
+          <h2 className=" bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent text-3xl font-semibold mb-6">
             Our Integrated Platform
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-10">
@@ -706,7 +709,7 @@ export default function App() {
 
         <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
           <motion.h2
-            className="text-4xl font-extrabold mb-4 text-orange-500"
+            className="bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent text-4xl font-extrabold mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -784,13 +787,16 @@ export default function App() {
             <h4 className="text-white font-medium mb-3">Company</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#about" className="hover:text-orange-500 transition">About Us</a>
+                <a href="#about" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+                >About Us</a>
               </li>
               <li>
-                <a href="#platform" className="hover:text-orange-500 transition">Our Platform</a>
+                <a href="#platform" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+                >Our Platform</a>
               </li>
               <li>
-                <a href="#apps" className="hover:text-orange-500 transition">Our Apps</a>
+                <a href="#apps" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+                >Our Apps</a>
               </li>
             </ul>
           </div>
@@ -798,45 +804,41 @@ export default function App() {
           <div>
             <h4 className="text-white font-medium mb-3">Products</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#apps" className="hover:text-orange-500 transition">SoulWhispers</a></li>
-              <li><a href="#apps" className="hover:text-orange-500 transition">GymKey</a></li>
-              <li><a href="#platform" className="hover:text-orange-500 transition">Wellnex Portal</a></li>
+              <li><a href="#apps" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+              >SoulWhispers</a></li>
+              <li><a href="#apps" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+              >GymKey</a></li>
+              <li><a href="#platform" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+              >Wellnex Portal</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-medium mb-3">Support</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#contact" className="hover:text-orange-500 transition">Help Center</a></li>
-              <li><a href="#contact" className="hover:text-orange-500 transition">Contact Us</a></li>
-              <li><a href="#contact" className="hover:text-orange-500 transition">Privacy Policy</a></li>
+              <li><a href="#contact" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+              >Help Center</a></li>
+              <li><a href="#contact" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+              >Contact Us</a></li>
+              <li><a href="#contact" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+              >Privacy Policy</a></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-900 mt-10 pt-6 text-center text-sm text-gray-500">
           <p>
-            <a href="#" className="hover:text-orange-500 transition">📧info@wellnexsystems.com</a>
+            <a href="#" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+            >📧info@wellnexsystems.com</a>
             <span className="mx-3">•</span>
-            <a href="#" className="hover:text-orange-500 transition">🌐 www.wellnexsystems.com</a>
+            <a href="#" className="transition hover:bg-gradient-to-br hover:from-orange-500 hover:to-purple-600 hover:bg-clip-text hover:text-transparent"
+            >🌐 www.wellnexsystems.com</a>
           </p>
           <p>© {new Date().getFullYear()} Wellnex Systems — All Rights Reserved.</p>
           <p className="mt-2">Developed by Sameer and Shayan Mentor Sir Umair Warsi from Aptech SFC ❤️.</p>
         </div>
       </footer>
 
-      {/* Scroll to Top */}
-      {showScroll && (
-        <motion.button
-          onClick={scrollToTop}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="fixed bottom-6 right-6 p-3 rounded-full bg-gradient-to-br from-orange-500 to-purple-600 text-white shadow-lg hover:scale-105 z-50"
-        >
-          ↑
-        </motion.button>
-      )}
     </div>
   );
 }
