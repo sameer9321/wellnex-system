@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { motion, useAnimation, useMotionValue, useTransform, } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  useAnimation,
+  useMotionValue,
+  useTransform,
+  useInView,
+} from "framer-motion";
 import "./style.css";
-import "./appSection.css"
+import "./appSection.css";
 
 export default function App() {
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const navLinks = ["Home", "About", "Apps", "Platform", "Products", "Contact"];
 
-  // 3D Hover motion values for About Section
+  // 3D Hover motion values for About Section (kept as you had them)
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [15, -15]);
@@ -27,41 +31,81 @@ export default function App() {
     x.set(0);
     y.set(0);
   };
-  const controls = useAnimation();
+
+  // Slider controls (kept your logic but tuned easing & delays)
+   const controls = useAnimation();
   const images = [
     "../hero.jpg",
     "../hero2.jpg",
     "../hero3.jpg",
-    "../hero4.jpg"
+    "../hero4.jpg",
   ];
 
+  // --- Preload images for smoothness ---
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
   useEffect(() => {
+    let cancelled = false;
+    const loadAll = async () => {
+      try {
+        await Promise.all(
+          images.map(
+            (src) =>
+              new Promise((res) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => res(true);
+                img.onerror = () => res(true);
+              })
+          )
+        );
+        if (!cancelled) {
+          setTimeout(() => setImagesLoaded(true), 80);
+        }
+      } catch {
+        if (!cancelled) setImagesLoaded(true);
+      }
+    };
+    loadAll();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // --- Smooth auto slider ---
+  useEffect(() => {
+    if (!imagesLoaded) return;
+
+    let isCancelled = false;
     const totalSlides = images.length;
     let currentIndex = 0;
-    const loopSlider = async () => {
-      while (true) {
-        // move to next image
+
+    const run = async () => {
+      while (!isCancelled) {
         currentIndex++;
         await controls.start({
           x: `-${currentIndex * 100}%`,
-          transition: { duration: 1, ease: "easeInOut" },
+          transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
         });
-        // if reached duplicate (last), instantly reset to start
+
         if (currentIndex === totalSlides) {
-          await new Promise((r) => setTimeout(r, 3000)); // pause before loop
-          await controls.start({
-            x: "0%",
-            transition: { duration: 0 },
-          });
+          await new Promise((r) => setTimeout(r, 2400));
+          await controls.start({ x: "0%", transition: { duration: 0 } });
           currentIndex = 0;
         }
-        // wait between slides
         await new Promise((r) => setTimeout(r, 3000));
       }
     };
-    loopSlider();
-  }, [controls, images.length]);
 
+    const t = setTimeout(() => run(), 50);
+    return () => {
+      isCancelled = true;
+      clearTimeout(t);
+    };
+  }, [controls, imagesLoaded, images.length]);
+
+
+  // Product / filter state (unchanged)
   const [category, setCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -104,7 +148,6 @@ export default function App() {
     },
   ];
 
-  // === FILTERED PRODUCTS LOGIC ===
   const filteredProducts = products.filter((p) => {
     const matchesCategory = category === "all" || p.category === category;
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -114,6 +157,8 @@ export default function App() {
   const [flippedCard, setFlippedCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
+  const lastScrollRef = useRef(0);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -123,14 +168,25 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setShowScroll(window.scrollY > 300);
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      setShowScroll(window.scrollY > 300);
+
+      // simple auto-hide nav on scroll down, show on scroll up
+      const current = window.scrollY;
+      if (current < 80) {
+        setNavVisible(true);
+      } else {
+        setNavVisible(lastScrollRef.current > current);
+      }
+      lastScrollRef.current = current;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToTop = () =>
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  // Apps content (unchanged)
   const apps = [
     {
       id: "soul",
@@ -165,13 +221,55 @@ export default function App() {
     },
   ];
 
+  // small utility for fade variants
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.12, duration: 0.7, ease: [0.2, 0.8, 0.2, 1] },
+    }),
+  };
+
+  // wrapper for on-scroll reveal using useInView (for elements inside sections)
+  const Reveal = ({ children, delayIndex = 0 }) => {
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true, margin: "-60px" });
+    const controls = useAnimation();
+    useEffect(() => {
+      if (inView) controls.start("visible");
+    }, [inView, controls]);
+    return (
+      <motion.div
+        ref={ref}
+        variants={fadeUp}
+        initial="hidden"
+        animate={controls}
+        custom={delayIndex}
+      >
+        {children}
+      </motion.div>
+    );
+  };
+
   return (
     <div className="min-h-screen font-sans text-white bg-black scroll-smooth">
+      {/* animated gradient blobs & subtle noise */}
+      <div className="bg-lights">
+        <div className="blob blob-1" />
+        <div className="blob blob-2" />
+        <div className="blob blob-3" />
+      </div>
+
       {/* ===== NAVBAR ===== */}
-      <header className="fixed w-full z-40 backdrop-blur-md bg-black/60 py-4 border-b border-gray-800">
+      <motion.header
+        animate={{ y: navVisible ? 0 : -86 }}
+        transition={{ duration: 0.45, ease: "easeInOut" }}
+        className="fixed w-full z-40 backdrop-blur-md bg-black/55 py-4 border-b border-gray-900/60"
+      >
         <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-md bg-orange-500 flex items-center justify-center text-white font-bold transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 rounded-md bg-gradient-to-br from-orange-400 to-purple-600 flex items-center justify-center text-white font-bold transition-transform group-hover:scale-110 shadow-md">
               W
             </div>
             <span className="font-semibold text-gray-100 group-hover:text-orange-400 transition">
@@ -185,9 +283,10 @@ export default function App() {
               <li key={link}>
                 <a
                   href={`#${link.toLowerCase()}`}
-                  className="text-gray-300 hover:text-orange-400 transition duration-200"
+                  className="text-gray-300 hover:text-orange-400 transition duration-200 relative px-1 py-1 group"
                 >
-                  {link}
+                  <span>{link}</span>
+                  <span className="nav-underline" />
                 </a>
               </li>
             ))}
@@ -197,17 +296,22 @@ export default function App() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-sm px-3 py-2 rounded bg-orange-500 text-white"
+              className="text-sm px-3 py-2 rounded bg-gradient-to-br from-orange-500 to-purple-600 text-white shadow"
             >
               {isMenuOpen ? "Close" : "Menu"}
             </button>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
       {/* Mobile Dropdown Menu */}
       {isMenuOpen && (
-        <div className="md:hidden fixed top-16 left-0 w-full bg-black/90 text-white z-30 px-6 py-4 space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="md:hidden fixed top-16 left-0 w-full bg-black/92 text-white z-30 px-6 py-4 space-y-4 border-b border-gray-900"
+        >
           {navLinks.map((link) => (
             <a
               key={link}
@@ -218,98 +322,107 @@ export default function App() {
               {link}
             </a>
           ))}
-        </div>
+        </motion.div>
       )}
-      );
-
 
       {/* ===== HERO SECTION ===== */}
       <section
-        id="home"
-        className="relative overflow-hidden bg-gradient-to-b from-black to-gray-900 pt-28 pb-20"
-      >
-        <div className="max-w-6xl mx-auto px-6 flex flex-col-reverse lg:flex-row items-center gap-12">
-          {/* Left Side */}
-          <div className="w-full lg:w-1/2">
-            <div className="overflow-hidden">
-              <motion.h1
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  duration: 2,
-                  ease: "easeInOut", // smooth in and out
-                }}
-                className="text-4xl md:text-5xl font-extrabold leading-tight"
-              >
-                Wellnex Systems
-                <span className="block text-orange-500 mt-2">
-                  Wellness, Reimagined for the Next Generation
-                </span>
-              </motion.h1>
+      id="home"
+      className="relative overflow-hidden bg-gradient-to-b from-black to-gray-900 pt-28 pb-20 hero-anim"
+    >
+      <div className="max-w-6xl mx-auto px-6 flex flex-col-reverse lg:flex-row items-center gap-12">
+        {/* Left Side */}
+        <div className="w-full lg:w-1/2">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{
+              duration: 1.4,
+              ease: [0.16, 1, 0.3, 1],
+              delay: 0.08,
+            }}
+            className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
+          >
+            Wellnex Systems
+            <span className="block text-orange-500 mt-2">
+              Wellness, Reimagined for the Next Generation
+            </span>
+          </motion.h1>
 
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{
+              duration: 1.1,
+              delay: 0.35,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="mt-6 text-gray-400 text-lg"
+          >
+            A digital wellness ecosystem designed to help you live better —
+            combining mindfulness, fitness, and health insights powered by AI
+            and innovation.
+          </motion.p>
 
-            </div>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="mt-6 text-gray-400 text-lg"
+          <motion.div
+            className="mt-8 flex flex-wrap gap-4"
+            initial={{ opacity: 0, y: 30 }}
+            animate={imagesLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{
+              duration: 1.1,
+              delay: 0.6,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <a
+              href="#platform"
+              className="inline-block px-6 py-3 rounded-lg bg-gradient-to-br from-orange-500 to-purple-600 text-white font-medium transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
-              A digital wellness ecosystem designed to help you live better —
-              combining mindfulness, fitness, and health insights powered by AI
-              and innovation.
-            </motion.p>
-
-            <motion.div
-              className="mt-8 flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              Join the Movement
+            </a>
+            <a
+              href="#apps"
+              className="inline-block px-6 py-3 rounded-lg border border-gray-600 text-gray-300 font-medium transition-all duration-300 ease-in-out hover:bg-gray-800 hover:border-gray-500 hover:scale-105"
             >
-              <a
-                href="#platform"
-                className="inline-block px-6 py-3 rounded-lg bg-orange-500 text-white font-medium transition-all duration-300 ease-in-out hover:bg-orange-600 hover:scale-105 hover:shadow-lg"
-              >
-                Join the Movement
-              </a>
-              <a
-                href="#apps"
-                className="inline-block px-6 py-3 rounded-lg border border-gray-600 text-gray-300 font-medium transition-all duration-300 ease-in-out hover:bg-gray-800 hover:border-gray-500 hover:scale-105"
-              >
-                Explore Our Apps
-              </a>
-            </motion.div>
-          </div>
+              Explore Our Apps
+            </a>
+          </motion.div>
+        </div>
 
-          {/* Right Side - Smooth Infinite Slider */}
-          <div className="w-full lg:w-1/2 flex justify-center relative overflow-hidden rounded-2xl border border-gray-700 shadow-2xl h-[400px]">
-            <div className="absolute -inset-10 bg-orange-500/10 rounded-full blur-3xl"></div>
+        {/* Right Side - Smooth Infinite Slider */}
+        <div className="w-full lg:w-1/2 flex justify-center relative overflow-hidden rounded-2xl border border-gray-700 shadow-2xl h-[400px] hero-anim">
+          {/* glowing animated background blob */}
+          <div className="absolute -inset-10 bg-gradient-to-br from-orange-500/12 via-purple-600/6 rounded-full blur-3xl animate-blob" />
 
-            <motion.div
-              animate={controls}
-              className="flex relative z-10"
-              style={{
-                width: `${(images.length + 1) * 100}%`,
-                display: "flex",
-              }}
-            >
-              {[...images, images[0]].map((src, i) => (
+          <motion.div
+            animate={controls}
+            className="flex relative z-10 hero-anim"
+            style={{
+              width: `${(images.length + 1) * 100}%`,
+              display: "flex",
+            }}
+          >
+            {[...images, images[0]].map((src, i) => (
+              <div
+                key={i}
+                className="w-full flex-shrink-0 h-[400px] hero-anim"
+              >
                 <img
-                  key={i}
                   src={src}
                   alt={`Slide ${i + 1}`}
-                  className="w-full h-[400px] object-cover flex-shrink-0 rounded-2xl"
+                  className="w-full h-[400px] object-cover rounded-2xl shadow-inner hero-anim"
+                  draggable={false}
                 />
-              ))}
-            </motion.div>
-          </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
-      </section>
+      </div>
+    </section>
+
 
       {/* ===== ABOUT ===== */}
       <div className="bg-black text-white">
-        {/* === ABOUT SECTION WITH 3D HOVER IMAGE === */}
         <section id="about" className="max-w-6xl mx-auto px-6 py-20">
           <div style={{ textAlign: "center", paddingBottom: "40px" }}>
             <h1 style={{ fontWeight: "bold", fontSize: "3rem" }}>
@@ -322,7 +435,7 @@ export default function App() {
             <motion.img
               src="/about.jpeg" // image must be in /public folder
               alt="Wellness Lifestyle"
-              className="rounded-2xl shadow-lg w-full"
+              className="rounded-2xl shadow-lg w-full transform-style preserve-3d"
               style={{
                 rotateX,
                 rotateY,
@@ -331,9 +444,9 @@ export default function App() {
               }}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.88 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
             />
 
             <motion.div
@@ -357,8 +470,6 @@ export default function App() {
             </motion.div>
           </div>
         </section>
-
-        {/* You can continue with your slider, product grid, etc. below... */}
       </div>
 
       {/* ===== APPS ===== */}
@@ -384,7 +495,7 @@ export default function App() {
                     }`}
                 >
                   {/* Front */}
-                  <div className="absolute inset-0 bg-gray-900 p-6 rounded-2xl backface-hidden flex flex-col justify-between">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black p-6 rounded-2xl backface-hidden flex flex-col justify-between">
                     <div>
                       <img
                         src={app.image}
@@ -398,7 +509,7 @@ export default function App() {
                             {app.title}
                           </div>
                         </div>
-                        <div className="w-14 h-14 rounded-lg bg-orange-500 text-black flex items-center justify-center font-bold text-lg">
+                        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-orange-400 to-purple-600 text-black flex items-center justify-center font-bold text-lg shadow">
                           {app.title[0]}
                         </div>
                       </div>
@@ -430,7 +541,6 @@ export default function App() {
                       </a>
                     </div>
                   </div>
-
                 </div>
               </motion.div>
             ))}
@@ -438,18 +548,20 @@ export default function App() {
 
           {/* Scroll To Top Button */}
           {showScroll && (
-            <button
+            <motion.button
               onClick={scrollToTop}
-              className="fixed bottom-6 right-6 px-4 py-2 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 transition z-50"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="fixed bottom-6 right-6 px-4 py-2 bg-gradient-to-br from-orange-500 to-purple-600 text-white rounded-full shadow-lg hover:scale-105 z-50"
             >
               ↑ Top
-            </button>
+            </motion.button>
           )}
         </div>
       </section>
 
       {/* ===== PRODUCTS ===== */}
-      {/* ===== PRODUCTS SECTION ===== */}
       <section
         id="products"
         className="bg-gradient-to-b from-black to-gray-900 py-20 border-t border-gray-800"
@@ -492,8 +604,8 @@ export default function App() {
               filteredProducts.map((p, index) => (
                 <motion.div
                   key={index}
-                  whileHover={{ y: -8 }}
-                  transition={{ duration: 0.3 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  transition={{ duration: 0.35, type: "spring", stiffness: 200 }}
                   className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-lg hover:border-orange-500 hover:shadow-orange-500/20 transition-all duration-300"
                 >
                   <img src={p.img} alt={p.name} className="w-full h-52 object-cover" />
@@ -502,7 +614,7 @@ export default function App() {
                     <p className="text-gray-400 text-sm mb-4">
                       {p.desc}
                     </p>
-                    <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-md transition-transform transform hover:scale-105">
+                    <button className="bg-gradient-to-br from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-md transition-transform transform hover:scale-105">
                       Buy Now
                     </button>
                   </div>
@@ -516,8 +628,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-
 
       {/* ===== PLATFORM ===== */}
       <section
@@ -588,11 +698,10 @@ export default function App() {
         </div>
       </section>
 
-
       {/* ===== CONTACT ===== */}
       <section id="contact" className="relative py-24 bg-gradient-to-b from-gray-900 to-black text-white overflow-hidden">
         {/* Subtle glowing background gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,102,0,0.15),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,102,0,0.12),transparent_70%)] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
           <motion.h2
@@ -616,8 +725,8 @@ export default function App() {
 
           {/* 📨 Contact Form */}
           <motion.form
-            className="max-w-lg mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 shadow-lg"
-            initial={{ opacity: 0, scale: 0.95 }}
+            className="max-w-lg mx-auto bg-white/8 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-lg"
+            initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
@@ -650,57 +759,37 @@ export default function App() {
 
             <motion.button
               type="submit"
-              className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-md transition-transform duration-300 hover:scale-105 shadow-md"
-              whileTap={{ scale: 0.95 }}
+              className="w-full py-3 bg-gradient-to-br from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-semibold rounded-md transition-transform duration-300 hover:scale-105 shadow-md"
+              whileTap={{ scale: 0.98 }}
             >
               Send Message
             </motion.button>
           </motion.form>
-
-          {/* Contact Info Below Form */}
-          <motion.div
-            className="mt-12 text-gray-400"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-          </motion.div>
         </div>
       </section>
 
-
       {/* ===== FOOTER ===== */}
-      <footer className="bg-black border-t border-gray-800 pt-14 pb-8">
+      <footer className="bg-black border-t border-gray-900 pt-14 pb-8">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10 text-gray-400">
-          {/* Brand */}
           <div>
-            <h3 className="text-xl font-semibold text-white mb-3">
-              Wellnex Systems
-            </h3>
+            <h3 className="text-xl font-semibold text-white mb-3">Wellnex Systems</h3>
             <p className="text-sm leading-relaxed mb-4">
               Empowering wellness through smart technology — connecting mind,
               body, and data in one seamless ecosystem.
             </p>
           </div>
 
-          {/* Links */}
           <div>
             <h4 className="text-white font-medium mb-3">Company</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#about" className="hover:text-orange-500 transition">
-                  About Us
-                </a>
+                <a href="#about" className="hover:text-orange-500 transition">About Us</a>
               </li>
               <li>
-                <a href="#platform" className="hover:text-orange-500 transition">
-                  Our Platform
-                </a>
+                <a href="#platform" className="hover:text-orange-500 transition">Our Platform</a>
               </li>
               <li>
-                <a href="#apps" className="hover:text-orange-500 transition">
-                  Our Apps
-                </a>
+                <a href="#apps" className="hover:text-orange-500 transition">Our Apps</a>
               </li>
             </ul>
           </div>
@@ -708,49 +797,26 @@ export default function App() {
           <div>
             <h4 className="text-white font-medium mb-3">Products</h4>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#apps" className="hover:text-orange-500 transition">
-                  SoulWhispers
-                </a>
-              </li>
-              <li>
-                <a href="#apps" className="hover:text-orange-500 transition">
-                  GymKey
-                </a>
-              </li>
-              <li>
-                <a href="#platform" className="hover:text-orange-500 transition">
-                  Wellnex Portal
-                </a>
-              </li>
+              <li><a href="#apps" className="hover:text-orange-500 transition">SoulWhispers</a></li>
+              <li><a href="#apps" className="hover:text-orange-500 transition">GymKey</a></li>
+              <li><a href="#platform" className="hover:text-orange-500 transition">Wellnex Portal</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-medium mb-3">Support</h4>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#contact" className="hover:text-orange-500 transition">
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="hover:text-orange-500 transition">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="hover:text-orange-500 transition">
-                  Privacy Policy
-                </a>
-              </li>
+              <li><a href="#contact" className="hover:text-orange-500 transition">Help Center</a></li>
+              <li><a href="#contact" className="hover:text-orange-500 transition">Contact Us</a></li>
+              <li><a href="#contact" className="hover:text-orange-500 transition">Privacy Policy</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-10 pt-6 text-center text-sm text-gray-500">
+        <div className="border-t border-gray-900 mt-10 pt-6 text-center text-sm text-gray-500">
           <p>
             <a href="#" className="hover:text-orange-500 transition">📧info@wellnexsystems.com</a>
+            <span className="mx-3">•</span>
             <a href="#" className="hover:text-orange-500 transition">🌐 www.wellnexsystems.com</a>
           </p>
           <p>© {new Date().getFullYear()} Wellnex Systems — All Rights Reserved.</p>
@@ -760,12 +826,15 @@ export default function App() {
 
       {/* Scroll to Top */}
       {showScroll && (
-        <button
+        <motion.button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 p-3 rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="fixed bottom-6 right-6 p-3 rounded-full bg-gradient-to-br from-orange-500 to-purple-600 text-white shadow-lg hover:scale-105 z-50"
         >
           ↑
-        </button>
+        </motion.button>
       )}
     </div>
   );
