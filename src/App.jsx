@@ -11,31 +11,48 @@ import "./appSection.css";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navLinks = ["Home", "About", "Apps", "Platform", "Products", "Contact"];
+  const navLinks = ["Home", "About", "Apps", "Platform", "Testimonials", "Contact"];
 
-  // 3D Hover motion values for About Section (kept as you had them)
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [15, -15]);
-  const rotateY = useTransform(x, [-100, 100], [-15, 15]);
+  const x1 = useMotionValue(0);
+  const y1 = useMotionValue(0);
+  const rotateX1 = useTransform(y1, [-100, 100], [15, -15]);
+  const rotateY1 = useTransform(x1, [-100, 100], [-15, 15]);
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove1 = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const posX = event.clientX - rect.left - rect.width / 2;
     const posY = event.clientY - rect.top - rect.height / 2;
-    x.set(posX);
-    y.set(posY);
+    x1.set(posX);
+    y1.set(posY);
   };
 
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
+  const handleMouseLeave1 = () => {
+    x1.set(0);
+    y1.set(0);
   };
 
+  // 3D motion values for SECOND image
+  const x2 = useMotionValue(0);
+  const y2 = useMotionValue(0);
+  const rotateX2 = useTransform(y2, [-100, 100], [15, -15]);
+  const rotateY2 = useTransform(x2, [-100, 100], [-15, 15]);
+
+  const handleMouseMove2 = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const posX = event.clientX - rect.left - rect.width / 2;
+    const posY = event.clientY - rect.top - rect.height / 2;
+    x2.set(posX);
+    y2.set(posY);
+  };
+
+  const handleMouseLeave2 = () => {
+    x2.set(0);
+    y2.set(0);
+  };
   // Slider controls (kept your logic but tuned easing & delays)
   const controls = useAnimation();
   const images = [
-    "../hero.jpg",
+    "../hero.png",
     "../hero2.jpg",
     "../hero3.jpg",
     "../hero4.jpg",
@@ -103,56 +120,6 @@ export default function App() {
       clearTimeout(t);
     };
   }, [controls, imagesLoaded, images.length]);
-
-
-  // Product / filter state (unchanged)
-  const [category, setCategory] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const products = [
-    {
-      name: "Protein Powder",
-      img: "../product.jpg",
-      category: "protein",
-      desc: "High-quality protein powder to support muscle recovery.",
-    },
-    {
-      name: "Creatine Monohydrate",
-      img: "../product2.webp",
-      category: "creatine",
-      desc: "Boost your performance and strength with pure creatine.",
-    },
-    {
-      name: "Vitamin Supplements",
-      img: "../product3.jpg",
-      category: "protein",
-      desc: "Essential vitamins to boost your daily wellness.",
-    },
-    {
-      name: "Energy Drinks",
-      img: "../product4.jpg",
-      category: "protein",
-      desc: "Instant energy boost for intense workouts.",
-    },
-    {
-      name: "Pre-Workout Boost",
-      img: "../product5.jpg",
-      category: "creatine",
-      desc: "Maximize performance and focus before workouts.",
-    },
-    {
-      name: "Protein Box",
-      img: "../product6.jpg",
-      category: "protein",
-      desc: "All-in-one protein meal box for busy days.",
-    },
-  ];
-
-  const filteredProducts = products.filter((p) => {
-    const matchesCategory = category === "all" || p.category === category;
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
 
   const [flippedCard, setFlippedCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -428,27 +395,27 @@ export default function App() {
         <section id="about" className="max-w-6xl mx-auto px-6 py-20">
           <div style={{ textAlign: "center", paddingBottom: "40px" }}>
             <h1 style={{ fontWeight: "bold", fontSize: "3rem" }}>
-              <span className="bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent  mr-4">
+              <span className="bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent mr-4">
                 About
               </span>
               <span style={{ color: "white" }}>Wellnex</span>
-
             </h1>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* ===== First section (image left) ===== */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
             <motion.img
-              src="/about2.png" // image must be in /public folder
+              src="/about2.png"
               alt="Wellness Lifestyle"
-              className="rounded-2xl shadow-lg w-full transform-style preserve-3d"
+              className="rounded-2xl shadow-lg w-full"
               style={{
-                rotateX,
-                rotateY,
+                rotateX: rotateX1,
+                rotateY: rotateY1,
                 transformPerspective: 1000,
                 cursor: "pointer",
               }}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              onMouseMove={handleMouseMove1}
+              onMouseLeave={handleMouseLeave1}
               initial={{ opacity: 0, scale: 0.88 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
@@ -474,8 +441,47 @@ export default function App() {
               </p>
             </motion.div>
           </div>
+
+          {/* ===== Second section (image right) ===== */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              className="lg:order-1 order-2"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="text-3xl font-semibold mb-4 text-white">
+                Together, We Thrive with Wellnex
+              </h2>
+              <p className="text-gray-400 leading-relaxed mb-4">
+                At Wellnex, we believe wellness grows stronger when people connect. Our mission is to empower teams, communities, and individuals to support each other on their journey toward a healthier, happier life.
+              </p>
+              <p className="text-gray-400 font-medium">
+                Through innovation, collaboration, and care, we’re building a wellness network that inspires motivation, celebrates progress, and makes well-being a shared experience — not a solo mission.
+              </p>
+            </motion.div>
+
+            <motion.img
+              src="/about3.jpg"
+              alt="Healthy Future"
+              className="rounded-2xl shadow-lg w-full lg:order-2 order-1"
+              style={{
+                rotateX: rotateX2,
+                rotateY: rotateY2,
+                transformPerspective: 1000,
+                cursor: "pointer",
+              }}
+              onMouseMove={handleMouseMove2}
+              onMouseLeave={handleMouseLeave2}
+              initial={{ opacity: 0, scale: 0.88 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+            />
+          </div>
         </section>
       </div>
+
 
       {/* ===== APPS ===== */}
       <section id="apps" className="bg-black py-20 border-t border-gray-800">
@@ -566,70 +572,75 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== PRODUCTS ===== */}
-      <section
-        id="products"
-        className="bg-gradient-to-b from-black to-gray-900 py-20 border-t border-gray-800"
-      >
+      {/* ===== TESTIMONIALS ===== */}
+      <section id="testimonials" className="bg-black py-24 border-t border-gray-800">
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className=" bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent text-3xl font-semibold mb-6">
-            Our Premium Products
+          <h2 className="text-4xl font-bold mb-14">
+            <span className="bg-gradient-to-br from-orange-500 to-purple-600 bg-clip-text text-transparent">
+              What People Are Saying
+            </span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto mb-12">
-            Explore our range of wellness products — designed to fuel your body, mind,
-            and performance.
-          </p>
 
-          {/* === Filter Controls === */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-12">
-            {/* Category Dropdown */}
-            <select
-              onChange={(e) => setCategory(e.target.value)}
-              value={category}
-              className="p-3 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none focus:border-orange-500"
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {/* Testimonial 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-orange-500/30 transition-all duration-300"
             >
-              <option value="all">All Categories</option>
-              <option value="protein">Protein</option>
-              <option value="creatine">Creatine</option>
-            </select>
-
-            {/* Search Bar */}
-            <input
-              type="text"
-              placeholder="Search product..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="p-3 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none focus:border-orange-500 w-full md:w-1/3"
-            />
-          </div>
-
-          {/* === Product Grid === */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((p, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  transition={{ duration: 0.35, type: "spring", stiffness: 200 }}
-                  className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-lg hover:border-orange-500 hover:shadow-orange-500/20 transition-all duration-300"
-                >
-                  <img src={p.img} alt={p.name} className="w-full h-52 object-cover" />
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-white mb-2">{p.name}</h3>
-                    <p className="text-gray-400 text-sm mb-4">
-                      {p.desc}
-                    </p>
-                    <button className="bg-gradient-to-br from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-md transition-transform transform hover:scale-105">
-                      Buy Now
-                    </button>
-                  </div>
-                </motion.div>
-              ))
-            ) : (
-              <p className="text-gray-400 text-center col-span-3">
-                No products found.
+              <img
+                src="/user.jpg"
+                alt="User"
+                className="w-16 h-16 rounded-full mx-auto mb-5 border-2 border-orange-500 object-cover"
+              />
+              <p className="text-gray-300 italic text-lg mb-5 leading-relaxed">
+                “SoulWhispers helped me find calm in chaos. It's like therapy in my pocket — I feel more grounded every day.”
               </p>
-            )}
+              <h4 className="font-semibold text-white">Ayesha R.</h4>
+              <p className="text-gray-500 text-sm">Mindfulness Enthusiast, Karachi</p>
+            </motion.div>
+
+            {/* Testimonial 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+              className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-purple-600/30 transition-all duration-300"
+            >
+              <img
+                src="/user2.jpg"
+                alt="User"
+                className="w-16 h-16 rounded-full mx-auto mb-5 border-2 border-purple-600 object-cover"
+              />
+              <p className="text-gray-300 italic text-lg mb-5 leading-relaxed">
+                “GymKey transformed how I run my gym — from bookings to tracking. It’s powerful and effortless.”
+              </p>
+              <h4 className="font-semibold text-white">Imran M.</h4>
+              <p className="text-gray-500 text-sm">Gym Owner, Lahore</p>
+            </motion.div>
+
+            {/* Testimonial 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
+              className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-pink-500/30 transition-all duration-300"
+            >
+              <img
+                src="/user3.jpg"
+                alt="User"
+                className="w-16 h-16 rounded-full mx-auto mb-5 border-2 border-pink-500 object-cover"
+              />
+              <p className="text-gray-300 italic text-lg mb-5 leading-relaxed">
+                “Wellnex made it easy to track my health goals and stay consistent — it keeps me motivated every day.”
+              </p>
+              <h4 className="font-semibold text-white">Sara K.</h4>
+              <p className="text-gray-500 text-sm">Wellness Coach, Islamabad</p>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -739,7 +750,7 @@ export default function App() {
               <label className="block text-sm mb-2 text-gray-300">Your Name</label>
               <input
                 type="text"
-                placeholder="John Doe"
+                placeholder="Your Name"
                 className="w-full p-3 rounded-md bg-gray-900 border border-gray-700 text-gray-200 focus:outline-none focus:border-orange-500"
               />
             </div>
@@ -748,7 +759,7 @@ export default function App() {
               <label className="block text-sm mb-2 text-gray-300">Your Email</label>
               <input
                 type="email"
-                placeholder="you@example.com"
+                placeholder="Your Email"
                 className="w-full p-3 rounded-md bg-gray-900 border border-gray-700 text-gray-200 focus:outline-none focus:border-orange-500"
               />
             </div>
