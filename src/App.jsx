@@ -52,9 +52,9 @@ export default function App() {
   // Slider controls (kept your logic but tuned easing & delays)
   const controls = useAnimation();
   const images = [
-    "../hero.png",
-    "../hero2.jpg",
-    "../hero3.jpg",
+    "../hero.jpeg",
+    "../hero2.jpeg",
+    "../hero3.jpeg",
     "../hero4.jpg",
   ];
 
